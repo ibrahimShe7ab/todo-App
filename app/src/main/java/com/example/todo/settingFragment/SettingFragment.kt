@@ -2,6 +2,8 @@ package com.example.todo.settingFragment
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
@@ -14,7 +16,9 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.transition.Visibility.Mode
+import com.example.todo.CONST
 import com.example.todo.R
 import com.example.todo.databinding.FragmentSettingBinding
 import java.util.Locale
@@ -22,6 +26,8 @@ import java.util.Locale
 
 class SettingFragment : Fragment() {
     lateinit var binding: FragmentSettingBinding
+    lateinit var shardPreferences: SharedPreferences
+    lateinit var editor: Editor
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +49,8 @@ class SettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+shardPreferences=requireContext().getSharedPreferences(CONST.SHARD_NAME,Context.MODE_PRIVATE)
+        editor=shardPreferences.edit()
         setupLanguageSpinner(requireContext())
         modeSpinner(requireContext())
     }
@@ -54,7 +61,7 @@ class SettingFragment : Fragment() {
 
     fun setupLanguageSpinner(context: Context) {
         val spinner: Spinner = requireView().findViewById(R.id.language_spinner)
-        val languages = arrayOf("English","العربية" )
+        val languages = arrayOf("select language","English","العربية" )
         val adapter = ArrayAdapter(
             context,
             android.R.layout.simple_spinner_item,
@@ -66,9 +73,19 @@ class SettingFragment : Fragment() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when (position) {
-                    0 -> setLocale(context, "en") // English
-                    1 -> setLocale(context, "ar") // Arabic
-                }
+                    0 ->{ }
+                   1 -> {
+                       setLocale(context, "en") // English
+                       editor.putString( CONST.LANGUAGE_CODE,"en")
+                       editor.commit()
+
+                      }
+                    2 -> {
+                        setLocale(context, "ar") // Arabic
+                        editor.putString(CONST.LANGUAGE_CODE,"ar")
+                        editor.commit()
+
+                    } }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -80,20 +97,12 @@ class SettingFragment : Fragment() {
 
     fun setLocale(context: Context, languageCode: String) {
         val locale = Locale(languageCode)
-        Locale.setDefault(locale)
-        val config = context.resources.configuration
-        config.setLocale(locale)
-        context.createConfigurationContext(config)
-        // Update the configuration of the app context
-        context.resources.updateConfiguration(config, context.resources.displayMetrics)
-        // Refresh the activity to apply the new language settings
-        if(activity?.isDestroyed==true){ (context as? Activity)?.recreate() }
-
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode))
     }
 
     fun modeSpinner(context: Context) {
         // Array of modes
-        val modes = arrayOf("Light", "Dark")
+        val modes = arrayOf("Select Mode","Light", "Dark")
 
         // Find the Spinner view
         val spinner: Spinner = (context as Activity).findViewById(R.id.mode_spinner)
@@ -110,11 +119,19 @@ class SettingFragment : Fragment() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position == 0) {
-                    // Light mode selected
-                    changeToLightMode()
+
+
                 } else if (position == 1) {
                     // Dark mode selected
+                    changeToLightMode()
+                    editor.putString(CONST.MODE_CODE,CONST.LIGHT_MODE_CODE)
+                    editor.commit()
+
+                } else if (position == 2) {
+                    // Dark mode selected
                     changeToDarkMode()
+                    editor.putString(CONST.MODE_CODE,CONST.DARK_MODE_CODE)
+                    editor.commit()
                 }
             }
 
@@ -133,14 +150,12 @@ class SettingFragment : Fragment() {
     // Function to change to light mode
     fun changeToLightMode() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-//        if(activity?.isDestroyed==true){ (context as? Activity)?.recreate() }
 
     }
 
     // Function to change to dark mode
     fun changeToDarkMode() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        if(activity?.isDestroyed==true){ (context as? Activity)?.recreate() }
 
     }
 

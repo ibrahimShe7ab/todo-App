@@ -3,6 +3,7 @@ package com.example.todo.fragments
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -19,12 +20,12 @@ class listAdapter(var listTask: MutableList<Task>) : Adapter<listAdapter.listVie
         fun bind(task: Task) {
             binding.taskTitle.text = task.title
             val simpleDateFormat = task.date?.let {
-                SimpleDateFormat("yyyy.MM.dd 'at' hh:mm").format(
+                SimpleDateFormat("yyyy.MM.dd").format(
                     it
                 )
             }
             binding.taskDate.text = simpleDateFormat
-            binding.isDone.drawable
+//            binding.isDone.setOnClickListener{}
 
 
         }
@@ -61,6 +62,10 @@ class listAdapter(var listTask: MutableList<Task>) : Adapter<listAdapter.listVie
         }
 
         holder.binding.isDone.setOnClickListener {
+            TaskDatabase.getInstance(holder.itemView.rootView.context).getTaskDao().deleteTask(item)
+            listTask.removeAt(position)
+            notifyItemRemoved(position)
+           val toast= Toast.makeText(it.context, "Congratulations",Toast.LENGTH_LONG).show()
             it.setBackgroundResource(R.color.green)
             holder.binding.taskTitle.setTextColor(
                 ContextCompat.getColor(

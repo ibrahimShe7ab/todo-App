@@ -29,9 +29,12 @@ app:layout_constraintBottom_toTopOf="@id/taskDetails"
         app:errorEnabled="true"
         app:errorIconDrawable="@drawable/ic_error"
         android:layout_width="match_parent"
-app:layout_constraintBottom_toTopOf="@id/descriptionTextInputLayout"
+        style="@style/DayTextColor"
+
+        app:layout_constraintBottom_toTopOf="@id/descriptionTextInputLayout"
 app:layout_constraintTop_toBottomOf="@id/edit_taskTV"
         android:layout_height="wrap_content"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -45,11 +48,14 @@ app:layout_constraintTop_toBottomOf="@id/edit_taskTV"
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/descriptionTextInputLayout"
         android:layout_width="match_parent"
+        style="@style/DayTextColor"
+
         app:errorEnabled="true"
         app:errorIconDrawable="@drawable/ic_error"
 app:layout_constraintTop_toBottomOf="@id/taskDetails"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText

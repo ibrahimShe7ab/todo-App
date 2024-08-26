@@ -21,7 +21,7 @@
     </style>
 
     <style name="DayTextColor">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">#000000</item>
     </style>
 <style name="toolbarCalender"><item name="android:background">@color/blue</item></style>
 
